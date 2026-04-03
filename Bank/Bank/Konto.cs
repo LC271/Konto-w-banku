@@ -20,5 +20,20 @@ namespace Bank
         public string Nazwa => klient;
         public decimal Bilans => bilans;
         public bool Zablokowane => zablokowane;
+
+        public void Wplata(decimal kwota)
+        {     if (zablokowane)
+            {
+                Console.WriteLine("Konto jest zablokowane. Nie można dokonać wpłaty.");
+                return;
+            }
+            if (kwota <= 0)
+            {
+                Console.WriteLine("Kwota wpłaty musi być większa od zera.");
+                return;
+            }
+            bilans += kwota;
+            Console.WriteLine($"Wpłacono {kwota:C}. Nowy bilans: {bilans:C}");
+        }
     }
 }
