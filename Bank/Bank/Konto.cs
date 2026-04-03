@@ -21,6 +21,7 @@ namespace Bank
         public decimal Bilans => bilans;
         public bool Zablokowane => zablokowane;
 
+        #region wpłata i wypłata
         public void Wplata(decimal kwota)
         {     
             if (zablokowane)
@@ -48,5 +49,20 @@ namespace Bank
 
             bilans -= kwota;
         }
+        #endregion
+
+        #region blokada i odblokada
+
+        public void BlokujKonto()
+        {
+            zablokowane = true;
+        }
+        public void OdblokujKonto()
+        {
+            zablokowane = false;
+        }
+        #endregion
+
+
     }
 }
