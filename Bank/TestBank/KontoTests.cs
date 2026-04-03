@@ -6,6 +6,7 @@ namespace TestBank
     public sealed class KontoTests
     {
         #region Kontruktor
+
         [TestMethod]
         public void Konstruktor_dane_poprawne()
         {

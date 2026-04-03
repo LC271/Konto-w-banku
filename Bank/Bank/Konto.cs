@@ -15,12 +15,12 @@ namespace Bank
         {
             if (string.IsNullOrWhiteSpace(klient))
             {
-                throw new ArgumentException("Nazwa klienta nie może być pusta.", nameof(klient));
+                throw new ArgumentException("Nazwa klienta nie może być pusta.");
             }
 
             if (bilansNaStart < 0)
             {
-                throw new ArgumentException("Bilans początkowy nie może być ujemny.", nameof(bilansNaStart));
+                throw new ArgumentException("Bilans początkowy nie może być ujemny.");
             }
 
             this.klient = klient;
