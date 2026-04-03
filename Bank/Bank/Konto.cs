@@ -4,13 +4,12 @@ using System.Text;
 
 namespace Bank
 {
-    internal class Konto
+    public class Konto
     {
         private string klient;  //nazwa klienta
         private decimal bilans;  //aktualny stan środków na koncie
         private bool zablokowane = false; //stan konta
 
-        //private Konto() { } //konstruktor bezparametrowy, który jest prywatny, aby uniemożliwić tworzenie kont bez podania klienta i bilansu
 
         public Konto(string klient, decimal bilansNaStart = 0) 
         {
@@ -18,17 +17,8 @@ namespace Bank
             this.bilans = bilansNaStart;
         }
 
-        public string NazwaKlienta
-        {
-            get { return klient; }
-        }
-        public decimal Bilans
-        {
-            get { return bilans; }
-        }
-        public bool Zablokowane
-        {
-            get { return zablokowane; }
-        }
+        public string Nazwa => klient;
+        public decimal Bilans => bilans;
+        public bool Zablokowane => zablokowane;
     }
 }
