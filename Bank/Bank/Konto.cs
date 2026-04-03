@@ -11,8 +11,18 @@ namespace Bank
         private bool zablokowane = false; //stan konta
 
 
-        public Konto(string klient, decimal bilansNaStart = 0) 
+        public Konto(string klient, decimal bilansNaStart = 0)
         {
+            if (string.IsNullOrWhiteSpace(klient))
+            {
+                throw new ArgumentException("Nazwa klienta nie może być pusta.", nameof(klient));
+            }
+
+            if (bilansNaStart < 0)
+            {
+                throw new ArgumentException("Bilans początkowy nie może być ujemny.", nameof(bilansNaStart));
+            }
+
             this.klient = klient;
             this.bilans = bilansNaStart;
         }
@@ -21,17 +31,19 @@ namespace Bank
         public decimal Bilans => bilans;
         public bool Zablokowane => zablokowane;
 
+        //public readonly (string Nazwa, decimal Bilans, bool Zablokowane) StanKonta = new (string.Empty, 0m, false);
+
         #region wpłata i wypłata
         public void Wplata(decimal kwota)
         {     
             if (zablokowane)
             {
-                throw new Exception("Konto jest zablokowane. Nie można dokonać wpłaty.");
+                throw new ArgumentException("Konto jest zablokowane. Nie można dokonać wpłaty.");
             }
 
             if (kwota <= 0)
             {
-                throw new Exception("Kwota wpłaty musi być większa od zera.");
+                throw new ArgumentException("Kwota wpłaty musi być większa od zera.");
             }
 
             bilans += kwota;
@@ -39,13 +51,13 @@ namespace Bank
         public void Wyplata(decimal kwota)
         {
             if (zablokowane)
-                throw new Exception("Konto jest zablokowane. Nie można dokonać wypłaty.");
+                throw new ArgumentException("Konto jest zablokowane. Nie można dokonać wypłaty.");
 
             if (kwota <= 0)
-                throw new Exception("Kwota wpłaty musi być większa od zera.");
+                throw new ArgumentException("Kwota wpłaty musi być większa od zera.");
 
             if (kwota > bilans)
-                throw new Exception("Niewystarczające środki na koncie.");
+                throw new ArgumentException("Niewystarczające środki na koncie.");
 
             bilans -= kwota;
         }
