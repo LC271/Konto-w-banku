@@ -68,6 +68,17 @@ namespace TestBank
             //act and assert
             Assert.Throws<ArgumentException>(() => konto.Wplata(kwota));
         }
+        [TestMethod]
+        public void Wplata_konto_zablokowane()
+        {
+            //arrange
+            decimal kwota = 500m;
+            decimal bilansNaStart = 1000m;
+            var konto = new Konto("Jan Kowalski", bilansNaStart);
+            konto.BlokujKonto();
+            //act and assert
+            Assert.Throws<ArgumentException>(() => konto.Wplata(kwota));
+        }
         #endregion
 
         #region wypłata
@@ -102,6 +113,17 @@ namespace TestBank
             decimal kwota = 1500m;
             decimal bilansNaStart = 1000m;
             var konto = new Konto("Jan Kowalski", bilansNaStart);
+            //act and assert
+            Assert.Throws<ArgumentException>(() => konto.Wyplata(kwota));
+        }
+        [TestMethod]
+        public void Wyplata_konto_zablokowane()
+        {
+            //arrange
+            decimal kwota = 500m;
+            decimal bilansNaStart = 1000m;
+            var konto = new Konto("Jan Kowalski", bilansNaStart);
+            konto.BlokujKonto();
             //act and assert
             Assert.Throws<ArgumentException>(() => konto.Wyplata(kwota));
         }
