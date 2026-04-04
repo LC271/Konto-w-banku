@@ -187,7 +187,7 @@ namespace Bank
 
             konto.ZmianaBilansu(kwota);
 
-            if (Bilans > 0)
+            if (konto.Bilans > 0)
             {
                 OdblokujKonto();
                 jednorazowyWykorzystany = false;
@@ -202,13 +202,13 @@ namespace Bank
             if (kwota <= 0)
                 throw new ArgumentException("Kwota wypłaty musi być większa od zera.");
 
-            if (kwota <= Bilans)
+            if (kwota <= konto.Bilans)
             {
                 konto.ZmianaBilansu(-kwota);
                 return;
             }
 
-            decimal potrzebne = kwota - Bilans;
+            decimal potrzebne = kwota - konto.Bilans;
 
             if (!jednorazowyWykorzystany && potrzebne <= limit)
             {
