@@ -19,7 +19,7 @@ class Program
 
         Console.WriteLine("program - Konto w banku");
         string[] rodzajeKonta = { "Konto", "KontoPlus", "KontoLimit" };
-        string[] operacje = {"Wpłata", "Wypłata", "Stan konta", "Blokuj konto", "Odblokuj konto", "Zmiana rodzaju konta", "Wyjście"};
+        string[] operacje = { "Wpłata", "Wypłata", "Stan konta", "Blokuj konto", "Odblokuj konto", "Zmiana rodzaju konta", "Wyjście" };
 
         static int WczytanieRodzaju(string komunikat)
         {
