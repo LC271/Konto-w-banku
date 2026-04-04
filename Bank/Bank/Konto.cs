@@ -151,14 +151,86 @@ namespace Bank
         private Konto konto;
         private decimal limit;
         private bool jednorazowyWykorzystany = false;
+        private decimal bilans;
 
         public KontoLimit(string klient, decimal bilansNaStart = 0, decimal limit = 0)
         {
             konto = new Konto(klient, bilansNaStart);
+            this.bilans = bilansNaStart;
             this.limit = limit;
         }
 
-        public decimal Bilans => konto.Bilans + (jednorazowyWykorzystany ? 0m : limit);
+        public string Nazwa => konto.Nazwa;
+        public decimal Bilans => bilans + (jednorazowyWykorzystany ? 0m : limit);
+        public bool Zablokowane => konto.Zablokowane;
+
+        public decimal Limit
+        {
+            get => limit;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("Jednorazowy limit debetowy nie może być ujemny.");
+                if (jednorazowyWykorzystany && bilans < 0 && -bilans > value)
+                    throw new ArgumentException("Nowy limit jest mniejszy niż obecnie wykorzystany debet.");
+                limit = value;
+            }
+        }
+
+        #region wpłata i wypłata
+        public void Wplata(decimal kwota)
+        {
+            if (kwota <= 0)
+                throw new ArgumentException("Kwota wpłaty musi być większa od zera.");
+
+            bilans += kwota;
+
+            if (bilans > 0)
+            {
+                OdblokujKonto();
+                jednorazowyWykorzystany = false;
+            }
+        }
+
+        public void Wyplata(decimal kwota)
+        {
+            if (Zablokowane)
+                throw new ArgumentException("Konto jest zablokowane. Nie można dokonać wypłaty.");
+
+            if (kwota <= 0)
+                throw new ArgumentException("Kwota wypłaty musi być większa od zera.");
+
+            if (kwota <= bilans)
+            {
+                bilans -= kwota;
+                return;
+            }
+
+            decimal potrzebne = kwota - bilans;
+
+            if (!jednorazowyWykorzystany && potrzebne <= limit)
+            {
+                bilans -= kwota;
+                jednorazowyWykorzystany = true;
+                BlokujKonto();
+                return;
+            }
+
+            throw new ArgumentException("Niewystarczające środki na koncie.");
+        }
+        #endregion
+
+        #region blokada i odblokada
+        public void BlokujKonto()
+        {
+            konto.BlokujKonto();
+        }
+
+        public void OdblokujKonto()
+        {
+            konto.OdblokujKonto();
+        }
+        #endregion
 
     }
 }

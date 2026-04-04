@@ -195,7 +195,7 @@ namespace TestBank
             // assert
             Assert.IsFalse(konto.Zablokowane);
             Assert.AreEqual(120m, konto.Bilans);
-            
+
         }
         [TestMethod]
         public void KontoPlus_wplata_kwota_niepoprawna()
@@ -276,5 +276,7 @@ namespace TestBank
         #endregion
 
     }
+
+
 
 }
