@@ -6,9 +6,9 @@ namespace Bank
 {
     public class Konto
     {
-        private string klient;  //nazwa klienta
-        private decimal bilans;  //aktualny stan środków na koncie
-        private bool zablokowane = false; //stan konta
+        protected string klient;  //nazwa klienta
+        protected decimal bilans;  //aktualny stan środków na koncie
+        protected bool zablokowane = false; //stan konta
 
 
         public Konto(string klient, decimal bilansNaStart = 0)
@@ -28,14 +28,13 @@ namespace Bank
         }
 
         public string Nazwa => klient;
-        public decimal Bilans => bilans;
+        public virtual decimal Bilans => bilans;
         public bool Zablokowane => zablokowane;
 
-        //public readonly (string Nazwa, decimal Bilans, bool Zablokowane) StanKonta = new (string.Empty, 0m, false);
-
         #region wpłata i wypłata
-        public void Wplata(decimal kwota)
-        {     
+
+        public virtual void Wplata(decimal kwota)
+        {
             if (zablokowane)
             {
                 throw new ArgumentException("Konto jest zablokowane. Nie można dokonać wpłaty.");
@@ -48,7 +47,7 @@ namespace Bank
 
             bilans += kwota;
         }
-        public void Wyplata(decimal kwota)
+        public virtual void Wyplata(decimal kwota)
         {
             if (zablokowane)
                 throw new ArgumentException("Konto jest zablokowane. Nie można dokonać wypłaty.");
@@ -76,5 +75,73 @@ namespace Bank
         #endregion
 
 
+    }
+
+    public class KontoPlus : Konto
+    {
+        private decimal jednorazowyLimitDebetowy;
+        private bool jednorazowyWykorzystany = false;
+
+        public override decimal Bilans => bilans + (jednorazowyWykorzystany ? 0m : jednorazowyLimitDebetowy);
+
+        public decimal JednorazowyLimitDebetowy
+        {
+            get => jednorazowyLimitDebetowy;
+            set
+            {
+                if (value < 0)
+                    throw new ArgumentException("Jednorazowy limit debetowy nie może być ujemny.");
+                if (jednorazowyWykorzystany && bilans < 0 && -bilans > value)
+                    throw new ArgumentException("Nowy limit jest mniejszy niż obecnie wykorzystany debet.");
+                jednorazowyLimitDebetowy = value;
+            }
+        }
+        public KontoPlus(string klient, decimal bilansNaStart = 0, decimal jednorazowyLimitDebetowy = 0) : base(klient, bilansNaStart)
+        {
+            JednorazowyLimitDebetowy = jednorazowyLimitDebetowy;
+        }
+
+        #region wpłata i wypłata
+        public override void Wplata(decimal kwota)
+        {
+            if (kwota <= 0)
+                throw new ArgumentException("Kwota wpłaty musi być większa od zera.");
+
+            bilans += kwota;
+
+            if (bilans > 0)
+            {
+                OdblokujKonto();
+                jednorazowyWykorzystany = false;
+            }
+        }
+
+        public override void Wyplata(decimal kwota)
+        {
+            if (Zablokowane)
+                throw new ArgumentException("Konto jest zablokowane. Nie można dokonać wypłaty.");
+
+            if (kwota <= 0)
+                throw new ArgumentException("Kwota wypłaty musi być większa od zera.");
+
+            if (kwota <= bilans)
+            {
+                base.Wyplata(kwota);
+                return;
+            }
+
+            decimal potrzebne = kwota - bilans;
+
+            if (!jednorazowyWykorzystany && potrzebne <= jednorazowyLimitDebetowy)
+            {
+                bilans -= kwota;
+                jednorazowyWykorzystany = true;
+                BlokujKonto();
+                return;
+            }
+
+            throw new ArgumentException("Niewystarczające środki na koncie.");
+            #endregion
+        }
     }
 }
