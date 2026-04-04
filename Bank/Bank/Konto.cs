@@ -152,6 +152,7 @@ namespace Bank
     //KontoLimit to samo co KontoPlus ale za pomocą delegacji, bez dziedziczenia
     public class KontoLimit
     {
+        //Bilans to bilans z konta plus limit, a konto.Bilans to tylko bilans z konta bez limitu.
         private Konto konto;
         private decimal limit;
         private bool jednorazowyWykorzystany = false;
@@ -173,7 +174,7 @@ namespace Bank
             {
                 if (value < 0)
                     throw new ArgumentException("Jednorazowy limit debetowy nie może być ujemny.");
-                if (jednorazowyWykorzystany && Bilans < 0 && -Bilans > value)
+                if (jednorazowyWykorzystany && konto.Bilans < 0 && -konto.Bilans > value)
                     throw new ArgumentException("Nowy limit jest mniejszy niż obecnie wykorzystany debet.");
                 limit = value;
             }
