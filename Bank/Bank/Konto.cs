@@ -72,11 +72,12 @@ namespace Bank
         {
             zablokowane = false;
         }
+        #endregion
         internal void ZmianaBilansu(decimal delta)
         {
             bilans += delta;
         }
-        #endregion
+
 
         #region konwersje
         // Konwersje ułatwiające tworzenie nowych obiektów różnych typów kont

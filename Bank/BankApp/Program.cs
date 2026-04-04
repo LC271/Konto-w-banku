@@ -18,7 +18,7 @@ class Program
 
         Console.WriteLine("program - Konto w banku");
         string[] rodzajeKonta = { "Konto", "Kontoplus", "KontoLimit" };
-        string[] operacje = { "Wpłata", "Wypłata", "Sprawdzenie bilansu", "Blokowanie konta", "Odblokowanie konta", "Wyjście" };
+        string[] operacje = {"Wpłata", "Wypłata", "Stan konta", "Blokuj konto", "Odblokuj konto", "Zmiana rodzaju konta", "Wyjście"};
 
         static int WczytanieRodzaju(string komunikat)
         {
@@ -59,7 +59,7 @@ class Program
                 Console.WriteLine("Nieprawidłowy numer. Proszę spróbować użyć 1, 2 lub 3 do wyboru odpowiedniego rodzaju konta.");
             }
         }
-        int RodzajOperacji = WczytanieOperacji("1. Wpłata\n2. Wypłata\n3. Sprawdzenie bilansu\n4. Blokowanie konta\n5. Odblokowanie konta\n6. Wyjście\n\n");
+        int RodzajOperacji = WczytanieOperacji("1. Wpłata\n2. Wypłata\n3. Sprawdzenie stanu konta\n4. Blokowanie konta\n5. Odblokowanie konta\n6. Zmiana rodzaju konta\n7. Wyjście\n\nPodaj numer operacji: ");
         Console.WriteLine($"Wybrany operacji: {operacje[RodzajOperacji - 1]}");
     }
 }
