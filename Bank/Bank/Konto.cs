@@ -79,26 +79,26 @@ namespace Bank
 
     public class KontoPlus : Konto
     {
-        private decimal jednorazowyLimitDebetowy;
+        private decimal limit;
         private bool jednorazowyWykorzystany = false;
 
-        public override decimal Bilans => bilans + (jednorazowyWykorzystany ? 0m : jednorazowyLimitDebetowy);
+        public override decimal Bilans => bilans + (jednorazowyWykorzystany ? 0m : limit);
 
-        public decimal JednorazowyLimitDebetowy
+        public decimal Limit
         {
-            get => jednorazowyLimitDebetowy;
+            get => limit;
             set
             {
                 if (value < 0)
                     throw new ArgumentException("Jednorazowy limit debetowy nie może być ujemny.");
                 if (jednorazowyWykorzystany && bilans < 0 && -bilans > value)
                     throw new ArgumentException("Nowy limit jest mniejszy niż obecnie wykorzystany debet.");
-                jednorazowyLimitDebetowy = value;
+                limit = value;
             }
         }
-        public KontoPlus(string klient, decimal bilansNaStart = 0, decimal jednorazowyLimitDebetowy = 0) : base(klient, bilansNaStart)
+        public KontoPlus(string klient, decimal bilansNaStart = 0, decimal limit = 0) : base(klient, bilansNaStart)
         {
-            JednorazowyLimitDebetowy = jednorazowyLimitDebetowy;
+            Limit = limit;
         }
 
         #region wpłata i wypłata
@@ -132,7 +132,7 @@ namespace Bank
 
             decimal potrzebne = kwota - bilans;
 
-            if (!jednorazowyWykorzystany && potrzebne <= jednorazowyLimitDebetowy)
+            if (!jednorazowyWykorzystany && potrzebne <= limit)
             {
                 bilans -= kwota;
                 jednorazowyWykorzystany = true;

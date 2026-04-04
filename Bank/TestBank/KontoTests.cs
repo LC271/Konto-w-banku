@@ -166,17 +166,17 @@ namespace TestBank
 
             // assert
             Assert.AreEqual("Adam", konto.Nazwa);
-            Assert.AreEqual(20m, konto.JednorazowyLimitDebetowy);
+            Assert.AreEqual(20m, konto.Limit);
             Assert.AreEqual(120m, konto.Bilans);
         }
 
         [TestMethod]
-        public void KontoPlus_jednorazowyLimitDebetowy_mniejszy_niz_zero()
+        public void KontoPlus_Limit_mniejszy_niz_zero()
         {
             // arrange
             var konto = new KontoPlus("Katarzyna", 100m, 20m);
             // act and assert
-            Assert.Throws<ArgumentException>(() => konto.JednorazowyLimitDebetowy = -10m);
+            Assert.Throws<ArgumentException>(() => konto.Limit = -10m);
         }
         #endregion
 
@@ -235,7 +235,7 @@ namespace TestBank
             Assert.AreEqual(-80m, konto.Bilans);
             Assert.IsTrue(konto.Zablokowane);
 
-            Assert.Throws<ArgumentException>(() => konto.JednorazowyLimitDebetowy = 50m);
+            Assert.Throws<ArgumentException>(() => konto.Limit = 50m);
         }
 
         [TestMethod]
