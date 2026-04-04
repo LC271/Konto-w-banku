@@ -144,4 +144,21 @@ namespace Bank
             #endregion
         }
     }
+
+    //KontoLimit to samo co KontoPlus ale za pomocą delegacji, bez dziedziczenia
+    public class KontoLimit
+    {
+        private Konto konto;
+        private decimal limit;
+        private bool jednorazowyWykorzystany = false;
+
+        public KontoLimit(string klient, decimal bilansNaStart = 0, decimal limit = 0)
+        {
+            konto = new Konto(klient, bilansNaStart);
+            this.limit = limit;
+        }
+
+        public decimal Bilans => konto.Bilans + (jednorazowyWykorzystany ? 0m : limit);
+
+    }
 }
