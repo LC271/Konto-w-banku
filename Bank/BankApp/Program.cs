@@ -1,6 +1,7 @@
 ﻿using System;
 using Bank;
 
+//note: bilans konta to saldo dostępnych środków, czyli suma środków na koncie + ewentualny limit (w przypadku KontoPlus i KontoLimit). Czyli ile możesz wypłacić.
 class Program
 {
     static void Main(string[] args)
@@ -91,7 +92,7 @@ class Program
         while (true)
         {
             Console.Write("\n-----[Możliwe operacje]-----\n");
-            Console.WriteLine("1. Wpłata\n2. Wypłata\n3. Sprawdzenie stanu konta\n4. Blokowanie konta\n5. Odblokowanie konta\n6. Zmiana rodzaju konta\n7. Wyjście");
+            Console.WriteLine("1. Wpłata\n2. Wypłata\n3. Sprawdzenie stanu konta\n4. Blokowanie konta\n5. Odblokowanie konta\n6. Zmiana rodzaju/limitu konta\n7. Wyjście");
             int op = WczytanieOperacji("\nPodaj numer operacji: ");
 
             try
