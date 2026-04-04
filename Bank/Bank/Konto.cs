@@ -53,7 +53,7 @@ namespace Bank
                 throw new ArgumentException("Konto jest zablokowane. Nie można dokonać wypłaty.");
 
             if (kwota <= 0)
-                throw new ArgumentException("Kwota wpłaty musi być większa od zera.");
+                throw new ArgumentException("Kwota wypłaty musi być większa od zera.");
 
             if (kwota > bilans)
                 throw new ArgumentException("Niewystarczające środki na koncie.");
