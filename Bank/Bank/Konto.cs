@@ -72,6 +72,10 @@ namespace Bank
         {
             zablokowane = false;
         }
+        internal void ZmianaBilansu(decimal delta)
+        {
+            bilans += delta;
+        }
         #endregion
 
 
@@ -151,17 +155,15 @@ namespace Bank
         private Konto konto;
         private decimal limit;
         private bool jednorazowyWykorzystany = false;
-        private decimal bilans;
 
         public KontoLimit(string klient, decimal bilansNaStart = 0, decimal limit = 0)
         {
             konto = new Konto(klient, bilansNaStart);
-            this.bilans = bilansNaStart;
             this.limit = limit;
         }
 
         public string Nazwa => konto.Nazwa;
-        public decimal Bilans => bilans + (jednorazowyWykorzystany ? 0m : limit);
+        public decimal Bilans => konto.Bilans + (jednorazowyWykorzystany ? 0m : limit);
         public bool Zablokowane => konto.Zablokowane;
 
         public decimal Limit
@@ -171,7 +173,7 @@ namespace Bank
             {
                 if (value < 0)
                     throw new ArgumentException("Jednorazowy limit debetowy nie może być ujemny.");
-                if (jednorazowyWykorzystany && bilans < 0 && -bilans > value)
+                if (jednorazowyWykorzystany && Bilans < 0 && -Bilans > value)
                     throw new ArgumentException("Nowy limit jest mniejszy niż obecnie wykorzystany debet.");
                 limit = value;
             }
@@ -183,9 +185,9 @@ namespace Bank
             if (kwota <= 0)
                 throw new ArgumentException("Kwota wpłaty musi być większa od zera.");
 
-            bilans += kwota;
+            konto.ZmianaBilansu(kwota);
 
-            if (bilans > 0)
+            if (Bilans > 0)
             {
                 OdblokujKonto();
                 jednorazowyWykorzystany = false;
@@ -200,17 +202,17 @@ namespace Bank
             if (kwota <= 0)
                 throw new ArgumentException("Kwota wypłaty musi być większa od zera.");
 
-            if (kwota <= bilans)
+            if (kwota <= Bilans)
             {
-                bilans -= kwota;
+                konto.ZmianaBilansu(-kwota);
                 return;
             }
 
-            decimal potrzebne = kwota - bilans;
+            decimal potrzebne = kwota - Bilans;
 
             if (!jednorazowyWykorzystany && potrzebne <= limit)
             {
-                bilans -= kwota;
+                konto.ZmianaBilansu(-kwota);
                 jednorazowyWykorzystany = true;
                 BlokujKonto();
                 return;
