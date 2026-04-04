@@ -78,6 +78,26 @@ namespace Bank
         }
         #endregion
 
+        #region konwersje
+        // Konwersje ułatwiające tworzenie nowych obiektów różnych typów kont
+        public virtual KontoPlus ToKontoPlus(decimal limit = 0m)
+        {
+            var kp = new KontoPlus(this.klient, this.bilans, limit);
+            if (this.zablokowane)
+                kp.BlokujKonto();
+            return kp;
+        }
+
+        public virtual KontoLimit ToKontoLimit(decimal limit = 0m)
+        {
+            var kl = new KontoLimit(this.klient, this.bilans, limit);
+            if (this.zablokowane)
+                kl.BlokujKonto();
+            return kl;
+        }
+
+
+        #endregion
 
     }
 
@@ -104,6 +124,27 @@ namespace Bank
         {
             Limit = limit;
         }
+
+        #region konwersje
+        // Konwersja do zwykłego Konto (rezygnacja z jednorazowego debetu)
+        public Konto ToKonto()
+        {
+            var k = new Konto(this.klient, this.bilans);
+            if (this.Zablokowane)
+                k.BlokujKonto();
+            return k;
+        }
+
+        // Konwersja do KontoLimit (delegacja) - zachowuje bilans i (domyślnie) obecny limit
+        public KontoLimit ToKontoLimit(decimal? limit = null)
+        {
+            var useLimit = limit ?? this.Limit;
+            var kl = new KontoLimit(this.klient, this.bilans, useLimit);
+            if (this.Zablokowane)
+                kl.BlokujKonto();
+            return kl;
+        }
+        #endregion
 
         #region wpłata i wypłata
         public override void Wplata(decimal kwota)
@@ -162,6 +203,24 @@ namespace Bank
             konto = new Konto(klient, bilansNaStart);
             this.limit = limit;
         }
+
+        #region konwersje
+        public Konto ToKonto()
+        {
+            var k = new Konto(this.konto.Nazwa, this.konto.Bilans);
+            if (this.Zablokowane)
+                k.BlokujKonto();
+            return k;
+        }
+
+        public KontoPlus ToKontoPlus(decimal limit)
+        {
+            var kp = new KontoPlus(this.konto.Nazwa, this.konto.Bilans, limit);
+            if (this.Zablokowane)
+                kp.BlokujKonto();
+            return kp;
+        }
+        #endregion
 
         public string Nazwa => konto.Nazwa;
         public decimal Bilans => konto.Bilans + (jednorazowyWykorzystany ? 0m : limit);
